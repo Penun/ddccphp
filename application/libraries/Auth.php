@@ -69,6 +69,10 @@ class Auth {
 		}
 	}
 
+	public function getUser(){
+		return $this->user;
+	}
+
 	/*
 	*  Get the user's data and load them into a variable.
 	*/

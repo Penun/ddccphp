@@ -15,11 +15,11 @@
 		this.set_p_in = -1;
 
 		angular.element(document).ready(function(){
-			$http.get("/users").then(function(data){
+			$http.get("/index.php/users").then(function(data){
     			if (data.data.success){
     				$scope.users = data.data.users;
     				for (var i = 0; i < $scope.users.length; i++){
-    					if ($scope.users[i].User_id == data.data.cur_us){
+    					if ($scope.users[i].user_id == data.data.cur_us){
     						$scope.curUs_in = i;
     						break;
     					}
@@ -368,12 +368,12 @@
 			}
 			if ($scope.users[u_i].fetched == null){
 				sendData = {
-					"user_id": $scope.users[u_i].User_id
+					"user_id": $scope.users[u_i].user_id
 				}
-				$http.post("/characters", sendData).then(function(data){
+				$http.post("/index.php/characters", sendData).then(function(data){
 					if (data.data.success){
 						for (var i = 0; i < $scope.users.length; i++){
-							if ($scope.users[i].User_id == data.data.user_id){
+							if ($scope.users[i].user_id == data.data.user_id){
 								$scope.curChars = $scope.users[i].playchars = data.data.playchars;
 								$scope.users[i].fetched = true;
 								$scope.showChars = true;
@@ -446,7 +446,7 @@
 
 		this.DeletableChar = function(us_id){
 			if ($scope.users != null && typeof($scope.users) != 'undefined'){
-				return $scope.users[$scope.curUs_in].User_id == us_id;
+				return $scope.users[$scope.curUs_in].user_id == us_id;
 			} else {
 				return false;
 			}

@@ -3,7 +3,6 @@
 	<br />
 	<br />
 	<div ng-controller="loginController as logCont">
-		<?php echo $rules; ?>
 		<form id="loginForm" name="loginForm" ng-submit="loginForm.$valid && logCont.tryLogin()" novalidate>
 			<br />
 			<p><label for="user_name">Username:</label><input type="text" name="user_name" ng-model="logCont.login.user_name" required/></p>

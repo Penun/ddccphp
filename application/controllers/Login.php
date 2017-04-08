@@ -18,7 +18,7 @@ class Login extends CI_Controller {
         }
 
 		//$salt = $this->config->item('salt');
-		//$data['pass'] = sha1($salt . 'Kleine8688');
+		//$data['pass'] = sha1($salt . 'test');
 
         $this->load->library('form_validation');
 		$subm_data = json_decode(file_get_contents('php://input'), true);
@@ -28,8 +28,7 @@ class Login extends CI_Controller {
         $this->form_validation->set_rules($this->form_rules['login']);
         if (!$this->form_validation->run())
         {
-			$data['rules'] = validation_errors();
-            $this->load->view('login', $data);
+            $this->load->view('login');
         }
         else
         {

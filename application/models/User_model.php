@@ -39,16 +39,13 @@ class User_model extends CI_Model {
         }
     }
 
-    public function get_users()
-    {
-		$this->db->where('clearance >', 0);
+    public function get_users($u_clear, $u_group) {
+		$this->db->where('clearance >=', $u_clear);
+		$this->db->where('group', $u_group);
         $query = $this->db->get($this->user_table);
-        if ($query->num_rows() > 0)
-        {
+        if ($query->num_rows() > 0) {
             return $query->result_array();
-        }
-        else
-        {
+        } else {
             return FALSE;
         }
     }

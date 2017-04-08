@@ -6,7 +6,7 @@
 			<ul>
 				<li ng-repeat="(ind, user) in users">
 					<span ng-click="mainCont.RevealCharacters(ind)" class="clickable">
-						{{user.UserName}}
+						{{user.user_name}}
 					</span>
 				</li>
 			</ul>
