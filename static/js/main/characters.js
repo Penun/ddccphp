@@ -70,7 +70,7 @@
 					"u_i": this.set_u_in,
 					"p_i": p_i
 				};
-				$http.post("/characters/details", sendData).then(function(data){
+				$http.post("/index.php/characters/details", sendData).then(function(data){
 					if (data.data.success){
 						$scope.users[data.data.u_i].playchars[data.data.p_i] = data.data.resp_obj.playchar;
 						if (data.data.resp_obj.playchar.race_build != null && data.data.resp_obj.playchar.race_build.sub_race != null){
@@ -188,12 +188,12 @@
 				}
 				$scope.ApplyAbilityBonus(u_i, p_i, op_mods);
 			}
-			$scope.users[u_i].playchars[p_i].t_str = $scope.users[u_i].playchars[p_i].b_str + $scope.users[u_i].playchars[p_i].bo_str;
-			$scope.users[u_i].playchars[p_i].t_dex = $scope.users[u_i].playchars[p_i].b_dex + $scope.users[u_i].playchars[p_i].bo_dex;
-			$scope.users[u_i].playchars[p_i].t_con = $scope.users[u_i].playchars[p_i].b_con + $scope.users[u_i].playchars[p_i].bo_con;
-			$scope.users[u_i].playchars[p_i].t_int = $scope.users[u_i].playchars[p_i].b_int + $scope.users[u_i].playchars[p_i].bo_int;
-			$scope.users[u_i].playchars[p_i].t_wis = $scope.users[u_i].playchars[p_i].b_wis + $scope.users[u_i].playchars[p_i].bo_wis;
-			$scope.users[u_i].playchars[p_i].t_cha = $scope.users[u_i].playchars[p_i].b_cha + $scope.users[u_i].playchars[p_i].bo_cha;
+			$scope.users[u_i].playchars[p_i].t_str = Number($scope.users[u_i].playchars[p_i].b_str) + Number($scope.users[u_i].playchars[p_i].bo_str);
+			$scope.users[u_i].playchars[p_i].t_dex = Number($scope.users[u_i].playchars[p_i].b_dex) + Number($scope.users[u_i].playchars[p_i].bo_dex);
+			$scope.users[u_i].playchars[p_i].t_con = Number($scope.users[u_i].playchars[p_i].b_con) + Number($scope.users[u_i].playchars[p_i].bo_con);
+			$scope.users[u_i].playchars[p_i].t_int = Number($scope.users[u_i].playchars[p_i].b_int) + Number($scope.users[u_i].playchars[p_i].bo_int);
+			$scope.users[u_i].playchars[p_i].t_wis = Number($scope.users[u_i].playchars[p_i].b_wis) + Number($scope.users[u_i].playchars[p_i].bo_wis);
+			$scope.users[u_i].playchars[p_i].t_cha = Number($scope.users[u_i].playchars[p_i].b_cha) + Number($scope.users[u_i].playchars[p_i].bo_cha);
 		};
 
 		$scope.ApplyAbilityBonus = function(u_i, p_i, mods){
@@ -382,6 +382,19 @@
 								charCol.removeClass("fade_out");
 								charCol.addClass("fade_in");
 								break;
+							}
+						}
+					} else {
+						var charCol = angular.element(document.querySelector("#character_col"));
+						charCol.removeClass("fade_nu");
+						charCol.removeClass("fade_in");
+						charCol.addClass("fade_out");
+						if (data.data.error == "1"){
+							for (var i = 0; i < $scope.users.length; i++){
+								if ($scope.users[i].user_id == data.data.user_id){
+									$scope.users[i].fetched = true;
+									break;
+								}
 							}
 						}
 					}
