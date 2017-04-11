@@ -306,7 +306,7 @@
 					"u_in": this.set_u_in,
 					"class_build_id": $scope.users[this.set_u_in].playchars[this.set_p_in].class_build.class_build_id
 				};
-				$http.post("/proficiencies/chosen", sendData).then(function(data){
+				$http.post("/index.php/proficiencies/chosen", sendData).then(function(data){
 					if (data.data.success){
 						var t_cp = data.data.cb_chosen_proficiencies;
 						var t_sb = Object.keys($scope.users[data.data.u_in].playchars[data.data.p_in].showBonuses);
