@@ -5,6 +5,7 @@ class Characters extends MY_Controller {
 	public function __construct(){
 		parent::__construct();
         $this->load->model('playchar_model');
+        $this->load->model('race_model');
 	}
 
     public function index(){
@@ -88,7 +89,21 @@ class Characters extends MY_Controller {
 			$resp['resp_obj']['playchar']['race_build']['sub_race']['sub_race_id'] = $chara['sub_race_id'];
 			$resp['resp_obj']['playchar']['race_build']['sub_race']['ability_mods'] = $chara['sub_race_ability_mods'];
 			$resp['resp_obj']['playchar']['race_build']['sub_race']['name'] = $chara['sub_race_name'];
-        }
+
+			$rac_fe = $this->race_model->getRaceFeatures($chara['race_id']);
+
+			if ($rac_fe !== FALSE) {
+				$resp['resp_obj']['race_features'] = array();
+				$rfc = count($rac_fe);
+				for ($i = 0; $i < $rfc; $i++){
+					$resp['resp_obj']['race_features'][$i]['race_feature_id'] = $rac_fe[$i]['race_feature_id'];
+					$resp['resp_obj']['race_features'][$i]['feature']['feature_id'] = $rac_fe[$i]['feature_id'];
+					$resp['resp_obj']['race_features'][$i]['feature']['name'] = $rac_fe[$i]['name'];
+					$resp['resp_obj']['race_features'][$i]['feature']['description'] = $rac_fe[$i]['description'];
+					$resp['resp_obj']['race_features'][$i]['feature']['options'] = $rac_fe[$i]['options'];
+				}
+			}
+		}
 
         header('Content-Type: application/json');
         echo json_encode($resp);
