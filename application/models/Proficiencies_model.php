@@ -2,6 +2,7 @@
 class Proficiencies_model extends CI_Model {
 
     var $cb_chosen_table = 'cb_chosen_proficiency';
+    var $proficiency_table = 'proficiency';
 
     public function __construct() {
         parent::__construct();
@@ -22,9 +23,38 @@ class Proficiencies_model extends CI_Model {
         $this->db->join('`class_build` AS T3', 'T3.`class_build_id` = T0.`class_build_id`', 'inner');
         $this->db->where('T0.`class_build_id`', $cb_id);
 
-        $query = $this->db->get();
-        if ($query->num_rows() > 0) {
-            return $query->result_array();
+        $result = $this->db->get();
+        if ($result->num_rows() > 0) {
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getBackground($bg_id){
+        $this->db->select('T0.`background_proficiency_id`');
+        $this->db->select('T1.`proficiency_id`');
+        $this->db->select('T1.`name`');
+        $this->db->select('T1.`type`');
+        $this->db->select('T1.`s_code`');
+        $this->db->from('`background_proficiency` AS T0');
+        $this->db->join('`proficiency` AS T1', 'T1.`proficiency_id` = T0.`proficiency_id` ', 'inner');
+        $this->db->join('`background` AS T2', 'T2.`background_id` = T0.`background_id` ', 'inner');
+        $this->db->where('T0.`background_id`', $bg_id);
+        $this->db->where('T1.`type`', 'skill');
+
+        $result = $this->db->get();
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getSkills(){
+        $result = $this->db->get($this->proficiency_table);
+        if ($result->num_rows() > 0){
+            return $result->result_array();
         } else {
             return FALSE;
         }

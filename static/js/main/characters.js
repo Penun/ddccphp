@@ -326,7 +326,7 @@
 					"u_in": this.set_u_in,
 					"background_id": $scope.users[this.set_u_in].playchars[this.set_p_in].background_build.background.background_id
 				};
-				$http.post("/proficiencies/background", sendData).then(function(data){
+				$http.post("/index.php/proficiencies/background", sendData).then(function(data){
 					if (data.data.success){
 						var t_bs = data.data.background_proficiencies;
 						var t_sb = Object.keys($scope.users[data.data.u_in].playchars[data.data.p_in].showBonuses);
@@ -386,9 +386,6 @@
 						}
 					} else {
 						var charCol = angular.element(document.querySelector("#character_col"));
-						charCol.removeClass("fade_nu");
-						charCol.removeClass("fade_in");
-						charCol.addClass("fade_out");
 						if (data.data.error == "1"){
 							for (var i = 0; i < $scope.users.length; i++){
 								if ($scope.users[i].user_id == data.data.user_id){
@@ -396,6 +393,15 @@
 									break;
 								}
 							}
+							$scope.curChars = [];
+							$scope.showChars = true;
+							charCol.removeClass("fade_nu");
+							charCol.removeClass("fade_out");
+							charCol.addClass("fade_in");
+						} else {
+							charCol.removeClass("fade_nu");
+							charCol.removeClass("fade_in");
+							charCol.addClass("fade_out");
 						}
 					}
 				});
@@ -457,9 +463,9 @@
 			$scope.overScreen = 3;
 		};
 
-		this.DeletableChar = function(us_id){
-			if ($scope.users != null && typeof($scope.users) != 'undefined'){
-				return $scope.users[$scope.curUs_in].user_id == us_id;
+		this.DeletableChar = function(){
+			if ($scope.users != null && typeof($scope.users) != 'undefined' && this.set_u_in > -1){
+				return $scope.users[$scope.curUs_in].user_id == $scope.users[this.set_u_in].user_id;
 			} else {
 				return false;
 			}
@@ -467,14 +473,14 @@
 
 		this.CheckRaces = function(){
 			if ($scope.races == null){
-				$http.get("/races/list").then(function(data){
+				$http.get("/index.php/races/list").then(function(data){
 					if (data.data.success){
 						$scope.races = data.data.races;
 						if (!$scope.addChar.is_partial){
 							var sendData = {
 								"r_id": $scope.addChar.race_build.race.race_id
 							};
-							$http.post("/races/subs", sendData).then(function(data){
+							$http.post("/index.php/races/subs", sendData).then(function(data){
 								if (data.data.success){
 									for (var i = 0; i < $scope.races.length; i++){
 										if ($scope.races[i].race_id == data.data.r_id){
@@ -553,13 +559,16 @@
 			}
 
 			if ($scope.ch_classes == null){
-				$http.get("/classes/list").then(function(data){
+				$http.get("/index.php/classes/list").then(function(data){
 					if (data.data.success){
 						$scope.ch_classes = data.data.classes;
-						$scope.InsStep++;
+						//$scope.InsStep++;
 					}
 				});
-			} else {
+			}// else {
+			//	$scope.InsStep++;
+			//}
+			if ($scope.races != typeof('undefined') && $scope.races.length > 0){
 				$scope.InsStep++;
 			}
 		};
@@ -594,7 +603,7 @@
 
 			if (allCheck){
 				if ($scope.skillProfs == null){
-					$http.get("/proficiencies/skills").then(function(data){
+					$http.get("/index.php/proficiencies/skills").then(function(data){
 						if (data.data.success){
 							$scope.skillProfs = data.data.proficiencies;
 						}
@@ -606,7 +615,7 @@
 						"r_in": this.curRaceIndex,
 						"r_id": $scope.races[this.curRaceIndex].race_id
 					};
-					$http.post("/races/features", sendData).then(function(data){
+					$http.post("/index.php/races/features", sendData).then(function(data){
 						if (data.data.success){
 							$scope.races[data.data.r_in].features = data.data.race_features;
 							for (var i = 0; i < $scope.races[data.data.r_in].features.length; i++){
@@ -617,13 +626,14 @@
 				}
 
 				if ($scope.BGs == null){
-					$http.get("/backgrounds/list").then(function(data){
+					$http.get("/index.php/backgrounds/list").then(function(data){
 						if (data.data.success){
 							$scope.BGs = data.data.backgrounds;
-							$scope.InsStep++;
 						}
 					});
-				} else {
+				}
+
+				if ($scope.ch_classes != typeof('undefined') && $scope.ch_classes.length > 0){
 					$scope.InsStep++;
 				}
 			} else {
@@ -881,7 +891,7 @@
 				var sendData = {
 					"r_id": $scope.races[r_i].race_id
 				};
-				$http.post("/races/subs", sendData).then(function(data){
+				$http.post("/index.php/races/subs", sendData).then(function(data){
 					if (data.data.success){
 						for (var i = 0; i < $scope.races.length; i++){
 							if ($scope.races[i].race_id == data.data.r_id){

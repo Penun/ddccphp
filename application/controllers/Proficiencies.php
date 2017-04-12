@@ -31,9 +31,45 @@ class Proficiencies extends MY_Controller {
             }
         }
 
+        header("Content-Type: application/json");
+        echo json_encode($resp);
+    }
 
+    public function background(){
+        $subm_data = json_decode(file_get_contents('php://input'), TRUE);
+        $resp['success'] = FALSE;
+        $resp['error'] = '';
+        $resp['p_in'] = $subm_data['p_in'];
+        $resp['u_in'] = $subm_data['u_in'];
+
+        $bg_prof = $this->proficiencies_model->getBackground($subm_data['background_id']);
+        if ($bg_prof !== FALSE) {
+            $resp['success'] = TRUE;
+            $resp['background_proficiencies'] = array();
+            $bgc = count($bg_prof);
+            for ($i = 0; $i < $bgc; $i++){
+                $resp['background_proficiencies'][$i]['background_proficiency_id'] = $bg_prof[$i]['background_proficiency_id'];
+                $resp['background_proficiencies'][$i]['proficiency']['proficiency_id'] = $bg_prof[$i]['proficiency_id'];
+                $resp['background_proficiencies'][$i]['proficiency']['name'] = $bg_prof[$i]['name'];
+                $resp['background_proficiencies'][$i]['proficiency']['s_code'] = $bg_prof[$i]['s_code'];
+                $resp['background_proficiencies'][$i]['proficiency']['type'] = $bg_prof[$i]['type'];
+            }
+        }
 
         header("Content-Type: application/json");
         echo json_encode($resp);
     }
+
+	public function skills(){
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$skills = $this->proficiencies_model->getSkills();
+		if ($skills !== FALSE){
+			$resp['proficiencies'] = $skills;
+			$resp['success'] = TRUE;
+		}
+
+		header("Content-Type: application/json");
+        echo json_encode($resp);
+	}
 }

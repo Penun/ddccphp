@@ -47,6 +47,15 @@ class Login extends CI_Controller {
         }
     }
 
+	public function logout(){
+		$this->auth->verify();
+		if ($this->auth->is_logged_in()){
+			$this->auth->logout();
+			$resp['success'] = TRUE;
+			$resp['error'] = '';
+		}
+	}
+
     private function _populate_form_rules() {
 		$this->form_rules = array(
 			'login'=>array(

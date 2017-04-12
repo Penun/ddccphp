@@ -55,7 +55,7 @@
 		};
 
 		this.Logout = function(){
-			$http.get("/main/logout").then(function(data){
+			$http.get("/index.php/login/logout").then(function(data){
 				$window.location.href = '/';
 			});
 		};
