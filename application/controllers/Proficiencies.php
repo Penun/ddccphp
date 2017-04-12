@@ -39,11 +39,12 @@ class Proficiencies extends MY_Controller {
         $subm_data = json_decode(file_get_contents('php://input'), TRUE);
         $resp['success'] = FALSE;
         $resp['error'] = '';
-        $resp['p_in'] = $subm_data['p_in'];
-        $resp['u_in'] = $subm_data['u_in'];
-
         $bg_prof = $this->proficiencies_model->getBackground($subm_data['background_id']);
         if ($bg_prof !== FALSE) {
+			$resp['p_in'] = $subm_data['p_in'];
+			if (isset($subm_data['u_in'])){
+				$resp['u_in'] = $subm_data['u_in'];
+			}
             $resp['success'] = TRUE;
             $resp['background_proficiencies'] = array();
             $bgc = count($bg_prof);
@@ -71,5 +72,26 @@ class Proficiencies extends MY_Controller {
 
 		header("Content-Type: application/json");
         echo json_encode($resp);
+	}
+
+	public function class(){
+		$subm_data = json_decode(file_get_contents('php://input'), TRUE);
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$clapro = $this->proficiencies_model->getClassProfs($subm_data['c_id']);
+		if ($clapro !== FALSE){
+			$resp['success'] = TRUE;
+			$resp['c_in'] = $subm_data['c_in'];
+			$claproc = count($clapro);
+			for ($i = 0; $i < $claproc; $i++){
+				$resp['class_profs'][$i]['class_proficiency_id'] = $clapro[$i]['class_proficiency_id'];
+				$resp['class_profs'][$i]['proficiency']['proficiency_id'] = $clapro[$i]['proficiency_id'];
+				$resp['class_profs'][$i]['proficiency']['name'] = $clapro[$i]['name'];
+				$resp['class_profs'][$i]['proficiency']['s_code'] = $clapro[$i]['s_code'];
+				$resp['class_profs'][$i]['proficiency']['type'] = $clapro[$i]['type'];
+			}
+		}
+		header("Content-Type: application/json");
+		echo json_encode($resp);
 	}
 }

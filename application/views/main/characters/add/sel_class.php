@@ -1,31 +1,13 @@
-<h1>Racial Characteristics:</h1>
-<form id="insRaceInfo" name="insRaceInfo" novalidate>
-	<div ng-show="addChar.race_build.race.race_id">
-		<p class="underline_center">
-			<span><label for="charAge">Character Age:</label></span>
-			<span><i>(Adult Age: {{chInCont.aduAge}} - Max Age: {{chInCont.maxAge}})</i></span>
-			<span><input type="text" name="charAge" id="charAge" ng-model="addChar.race_build.age" maxlength="3" size="3" pattern="^[0-9]+$" required/></span>
-		</p>
-		<p class="underline_center">
-			<span><label for="charHeight">Character Height:</label></span>
-			<span><i>(Min: {{chInCont.minHeight}} - Max: {{chInCont.maxHeight}})</i></span>
-			<span><input type="text" name="charHFeet" id="charHFeet" ng-model="chInCont.chHeFe" maxlength="2" size="2" pattern="^[0-9]+$" required/>' <input type="text" name="charHInch" id="charHInch" ng-model="chInCont.chHeIn" maxlength="2" size="2" pattern="^[0-9]+$" required/>"</span>
-		</p>
-		<p class="underline_center">
-			<span><label for="charWeight">Character Weight:</label></span>
-			<span><i>(Min: {{chInCont.minWeight}} - Max: {{chInCont.maxWeight}})</i></span>
-			<span><input type="text" name="charWeight" id="charWeight" ng-model="addChar.race_build.weight" maxlength="3" size="3" pattern="^[0-9]+$" required/></span>
-		</p>
-	</div>
-	<div ng-show="addChar.race_build.race.race_id == 7">
-		<p><span><label for="halfElfAbil">Select (2):</label></span><span>
-		<select name="halfElfAbil" id="halfElfAbil" size="5" ng-model="chInCont.halfElfAbil" multiple>
-			<option value="str">Strength</option>
-			<option value="dex">Dexterity</option>
-			<option value="con">Constitution</option>
-			<option value="int">Intelligence</option>
-			<option value="wis">Wisdom</option>
-		</select></span></p>
-	</div>
-	<p><div ng-click="chInCont.BackStep()" class="back_butt button"><span class="button_text">Back</span></div> --- <div ng-show="insRaceInfo.$valid" ng-click="chInCont.SubmitRaceInfo()" class="next_butt button"><span class="button_text">Next</span></div></p>
-</form>
+<h1>Select Class:</h1>
+<div class="right_page_in">
+	<form id="insCharClass" name="insCharClass" novalidate>
+		<div ng-repeat="(c_i, ch_class) in ch_classes">
+			<div class="radIO"><input type="radio" name="classSel" id="classSel{{ch_class.class_id}}" value="{{ch_class.class_id}}" ng-model="addChar.class_build.class.class_id" ng-change="chInCont.UpdateSelClass(c_i)" required/><label for="classSel{{ch_class.class_id}}">{{ch_class.name}}</label><div class="check"></div></div>
+			<div ng-show="chInCont.CheckClassPath(c_i)">
+				<h2>Select Class Path:</h2>
+				<div ng-repeat="class_path in ch_class.class_paths" class="subOption"><div class="radIO"><input type="radio" name="classPathSel" id="classPathSel{{class_path.class_path_id}}" value="{{class_path.class_path_id}}" ng-model="addChar.class_build.class_path.class_path_id" /><label for="classPathSel{{class_path.class_path_id}}">{{class_path.name}}</label><div class="check"></div></div></div>
+			</div>
+		</div>
+		<p><div ng-click="chInCont.BackStep()" class="back_butt button"><span class="button_text">Back</span></div> --- <div ng-show="insCharClass.$valid" ng-click="chInCont.SubmitClass()" class="next_butt button"><span class="button_text">Next</span></div></p>
+	</form>
+</div>

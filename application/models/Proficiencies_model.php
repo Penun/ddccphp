@@ -59,4 +59,22 @@ class Proficiencies_model extends CI_Model {
             return FALSE;
         }
     }
+
+    public function getClassProfs($c_id){
+        $this->db->select('T0.`class_proficiency_id`');
+        $this->db->select('T0.`proficiency_id`');
+        $this->db->select('T0.`class_id`');
+        $this->db->select('T1.`name`');
+        $this->db->select('T1.`type`');
+        $this->db->select('T1.`s_code`');
+        $this->db->from('`class_proficiency` AS T0');
+        $this->db->join('`proficiency` AS T1', 'T1.`proficiency_id` = T0.`proficiency_id`', 'inner');
+        $this->db->where('T0.`class_id`', $c_id);
+        $result = $this->db->get();
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
 }

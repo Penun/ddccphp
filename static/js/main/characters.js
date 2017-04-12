@@ -176,7 +176,9 @@
 			$scope.ApplyAbilityBonus(u_i, p_i, r_mods.abil_mods);
 			if ($scope.users[u_i].playchars[p_i].race_build.sub_race != null){
 				var sr_mods = JSON.parse($scope.users[u_i].playchars[p_i].race_build.sub_race.ability_mods);
-				$scope.ApplyAbilityBonus(u_i, p_i, sr_mods.abil_mods);
+				if (sr_mods != null){
+					$scope.ApplyAbilityBonus(u_i, p_i, sr_mods.abil_mods);
+				}
 			}
 			if ($scope.users[u_i].playchars[p_i].race_build.options != null && $scope.users[u_i].playchars[p_i].race_build.options != ""){
 				var op_mods = [];
@@ -621,6 +623,8 @@
 							for (var i = 0; i < $scope.races[data.data.r_in].features.length; i++){
 								$scope.races[data.data.r_in].features[i].feature.options = JSON.parse($scope.races[data.data.r_in].features[i].feature.options);
 							}
+						} else if (data.data.error = "1"){
+							$scope.races[data.data.r_in].features = [];
 						}
 					});
 				}
@@ -737,7 +741,7 @@
 						"c_in": this.curClassIndex,
 						"c_id": $scope.ch_classes[this.curClassIndex].class_id
 					};
-					$http.post("/proficiencies/class", sendData).then(function(data){
+					$http.post("/index.php/proficiencies/class", sendData).then(function(data){
 						if (data.data.success){
 							$scope.ch_classes[data.data.c_in].skillProfs = data.data.class_profs;
 						}
@@ -793,7 +797,7 @@
 				};
 				if ($scope.$parent.addChar.is_partial){
 					sendData.chosen_profs = this.chosenProfs;
-					$http.post("/characters/insert", sendData).then(function(data){
+					$http.post("/index.php/characters/insert", sendData).then(function(data){
 						if (data.data.success){
 							if ($scope.users[$scope.curUs_in].playchars != null){
 								$scope.users[$scope.curUs_in].playchars.push(data.data.playchar);
@@ -941,7 +945,7 @@
 					var sendData = {
 						"c_id": $scope.ch_classes[c_i].class_id
 					};
-					$http.post("/classes/paths", sendData).then(function(data){
+					$http.post("/index.php/classes/paths", sendData).then(function(data){
 						if (data.data.success){
 							for (var i = 0; i < $scope.ch_classes.length; i++){
 								if ($scope.ch_classes[i].class_id == data.data.c_id){
@@ -1015,7 +1019,7 @@
 					"p_in": b_i,
 					"background_id": $scope.BGs[b_i].background_id
 				};
-				$http.post("/proficiencies/background", sendData).then(function(data){
+				$http.post("/index.php/proficiencies/background", sendData).then(function(data){
 					if (data.data.success){
 						$scope.BGs[data.data.p_in].proficiencies = data.data.background_proficiencies;
 					}

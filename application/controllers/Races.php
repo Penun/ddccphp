@@ -47,8 +47,8 @@ class Races extends MY_Controller {
                 $resp['race_features'][$i]['feature']['options'] = $feats[$i]['options'];
             }
             $resp['success'] = TRUE;
-            $resp['r_in'] = $subm_data['r_in'];
         }
+		$resp['r_in'] = $subm_data['r_in'];
         header("Content-Type: application/json");
         echo json_encode($resp);
     }

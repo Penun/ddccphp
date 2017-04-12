@@ -8,7 +8,6 @@ class Characters extends MY_Controller {
 	}
 
     public function index(){
-        $user = $this->auth->getUser();
         $subm_data = json_decode(file_get_contents('php://input'), TRUE);
         $resp['success'] = FALSE;
         $resp['error'] = '';
@@ -73,8 +72,10 @@ class Characters extends MY_Controller {
 			$resp['resp_obj']['playchar']['class_build']['class']['hit_dice'] = $chara['hit_dice'];
 			$resp['resp_obj']['playchar']['class_build']['class']['skill_profs'] = $chara['skill_profs'];
 			$resp['resp_obj']['playchar']['class_build']['class']['abil_prefs'] = $chara['abil_prefs'];
-			$resp['resp_obj']['playchar']['class_build']['class_path']['class_path_id'] = $chara['class_path_id'];
-			$resp['resp_obj']['playchar']['class_build']['class_path']['name'] = $chara['class_path_name'];
+			if (isset($chara['class_path_id'])){
+				$resp['resp_obj']['playchar']['class_build']['class_path']['class_path_id'] = $chara['class_path_id'];
+				$resp['resp_obj']['playchar']['class_build']['class_path']['name'] = $chara['class_path_name'];
+			}
 			$resp['resp_obj']['playchar']['race_build']['race_build_id'] = $chara['race_build_id'];
 			$resp['resp_obj']['playchar']['race_build']['age'] = $chara['age'];
 			$resp['resp_obj']['playchar']['race_build']['alignment'] = $chara['alignment'];
@@ -85,9 +86,11 @@ class Characters extends MY_Controller {
 			$resp['resp_obj']['playchar']['race_build']['race']['ability_mods'] = $chara['race_ability_mods'];
 			$resp['resp_obj']['playchar']['race_build']['race']['name'] = $chara['race_name'];
 			$resp['resp_obj']['playchar']['race_build']['race']['speed'] = $chara['speed'];
-			$resp['resp_obj']['playchar']['race_build']['sub_race']['sub_race_id'] = $chara['sub_race_id'];
-			$resp['resp_obj']['playchar']['race_build']['sub_race']['ability_mods'] = $chara['sub_race_ability_mods'];
-			$resp['resp_obj']['playchar']['race_build']['sub_race']['name'] = $chara['sub_race_name'];
+			if (isset($chara['sub_race_id'])){
+				$resp['resp_obj']['playchar']['race_build']['sub_race']['sub_race_id'] = $chara['sub_race_id'];
+				$resp['resp_obj']['playchar']['race_build']['sub_race']['ability_mods'] = $chara['sub_race_ability_mods'];
+				$resp['resp_obj']['playchar']['race_build']['sub_race']['name'] = $chara['sub_race_name'];
+			}
 
 			$rac_fe = $this->race_model->getRaceFeatures($chara['race_id']);
 
@@ -107,4 +110,24 @@ class Characters extends MY_Controller {
         header('Content-Type: application/json');
         echo json_encode($resp);
     }
+
+	public function insert(){
+		$subm_data = json_decode(file_get_contents('php://input'), TRUE);
+        $resp['success'] = FALSE;
+        $resp['error'] = '';
+		if (isset($subm_data['playchar']) && isset($subm_data['chosen_profs'])){
+			$user = $this->auth->getUser();
+			$subm_data['playchar']['user_id'] = $user['user_id'];
+			$subm_data['playchar']['is_npc'] = 0;
+			$pl_ch = $this->playchar_model->insert($subm_data['playchar'], $subm_data['chosen_profs']);
+			if ($pl_ch !== FALSE) {
+				$resp['success'] = TRUE;
+				$resp['playchar'] = $pl_ch;
+			}
+		} else {
+			$resp['error'] = "Missing data.";
+		}
+		header("Content-Type: application/json");
+		echo json_encode($resp);
+	}
 }
