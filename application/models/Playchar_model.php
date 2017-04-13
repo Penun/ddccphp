@@ -22,6 +22,17 @@ class Playchar_model extends CI_Model {
         }
     }
 
+    public function getBase($plch_id){
+        $this->db->select('user_id');
+        $this->db->where('playchar_id', $plch_id);
+        $result = $this->db->get($this->playchar_table);
+        if ($result->num_rows() > 0){
+            return $result->row_array();
+        } else {
+            return FALSE;
+        }
+    }
+
     public function getCharDetails($playchar_id){
         $this->db->select('T0.`name` AS playchar_name');
         $this->db->select('T0.`level`');
@@ -162,6 +173,90 @@ class Playchar_model extends CI_Model {
             } else {
                 return FALSE;
             }
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function update($plch, $up_chos){
+        $ra_build = $plch['race_build'];
+        $cl_build = $plch['class_build'];
+        $ba_build = $plch['background_build'];
+        unset($plch['race_build']);
+        unset($plch['class_build']);
+        unset($plch['background_build']);
+        $this->db->where('playchar_id', $plch['playchar_id']);
+        $this->db->update($this->playchar_table, $plch);
+
+        $ra_build['race_id'] = $ra_build['race']['race_id'];
+        unset($ra_build['race']);
+        if (isset($ra_build['sub_race'])){
+            $ra_build['sub_race_id'] = $ra_build['sub_race']['sub_race_id'];
+            unset($ra_build['sub_race']);
+        } else {
+            $ra_build['sub_race_id'] = NULL;
+        }
+        if (!isset($ra_build['options'])){
+            $ra_build['options'] = "";
+        }
+        $this->db->where('race_build_id', $ra_build['race_build_id']);
+        $this->db->update($this->race_build_table, $ra_build);
+
+        $cl_build['class_id'] = $cl_build['class']['class_id'];
+        unset($cl_build['class']);
+        if (isset($cl_build['class_path'])){
+            $cl_build['class_path_id'] = $cl_build['class_path']['class_path_id'];
+            unset($cl_build['class_path']);
+        } else {
+            $cl_build['class_path_id'] = NULL;
+        }
+        if (!isset($cl_build['options'])){
+            $cl_build['options'] = NULL;
+        }
+        $this->db->where('class_build_id', $cl_build['class_build_id']);
+        $this->db->update($this->class_build_table, $cl_build);
+
+        $ba_build['background_id'] = $ba_build['background']['background_id'];
+        unset($ba_build['background']);
+        $this->db->where('background_build_id', $ba_build['background_build_id']);
+        $this->db->update($this->background_build_table, $ba_build);
+
+        $this->load->model('proficiencies_model');
+        $cur_chos = $this->proficiencies_model->getCbChosen($cl_build['class_build_id']);
+        $curcc = count($cur_chos);
+        $upcc = count($up_chos);
+        if ($curcc == $upcc){
+            foreach ($up_chos as $prof){
+                if ($prof['class_proficiency_id'] != 0){
+                    $this->db->where('cb_chosen_proficiency_id', $prof['cb_chosen_proficiency_id']);
+                    $this->db->set('class_proficiency_id', $prof['class_proficiency_id']);
+                    $this->db->update($this->cb_chosen_proficiency_table);
+                } else {
+                    $this->db->where('cb_chosen_proficiency_id', $prof['cb_chosen_proficiency_id']);
+                    $this->db->delete($this->cb_chosen_proficiency_table);
+                }
+            }
+        } else if ($upcc > $curcc) {
+            for ($i = 0; $i < $upcc; $i++){
+                if ($i < $curcc){
+                    $this->db->where('cb_chosen_proficiency_id', $up_chos[$i]['cb_chosen_proficiency_id']);
+                    $this->db->set('class_proficiency_id', $up_chos[$i]['class_proficiency_id']);
+                    $this->db->update($this->cb_chosen_proficiency_table);
+                } else {
+                    $ins_prof['class_proficiency_id'] = $up_chos[$i]['class_proficiency_id'];
+                    $ins_prof['class_build_id'] = $cl_build['class_build_id'];
+                    $this->db->insert($this->cb_chosen_proficiency_table, $ins_prof);
+                }
+            }
+        }
+        return TRUE;
+    }
+
+    public function delete($plch_id){
+        $this->db->where('playchar_id', $plch_id);
+        $result = $this->db->delete($this->playchar_table);
+        if ($result !== FALSE){
+            return TRUE;
         } else {
             return FALSE;
         }

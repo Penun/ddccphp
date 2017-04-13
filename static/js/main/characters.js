@@ -450,7 +450,7 @@
 				"u_in": this.set_u_in,
 				"class_build_id": $scope.users[this.set_u_in].playchars[this.set_p_in].class_build.class_build_id
 			};
-			$http.post("/proficiencies/chosen", sendData).then(function(data){
+			$http.post("/index.php/proficiencies/chosen", sendData).then(function(data){
 				if (data.data.success){
 					$scope.addChar.cb_chosen = data.data.cb_chosen_proficiencies;
 				}
@@ -839,9 +839,7 @@
 						sendData.update_chosen.push(up_chos);
 					}
 
-					sendData.u_i =
-
-					$http.post("/characters/update", sendData).then(function(data){
+					$http.post("/index.php/characters/update", sendData).then(function(data){
 						if (data.data.success){
 							var p_i = -1;
 							for (var i = 0; i < $scope.users[$scope.curUs_in].playchars.length; i++){
@@ -851,10 +849,17 @@
 									break;
 								}
 							}
-							$scope.$parent.chara = data.data.playchar;
 							$scope.CalculateAbilityBonuses($scope.curUs_in, p_i);
 							$scope.CalculateAbilityMods($scope.curUs_in, p_i);
 							$scope.CalculateProficiencyBonus($scope.curUs_in, p_i);
+							if (data.data.playchar.race_build.sub_race != null){
+								$scope.users[$scope.curUs_in].playchars[p_i].raceRef = data.data.playchar.race_build.sub_race.name;
+							} else if (data.data.playchar.race_build != null){
+								$scope.users[$scope.curUs_in].playchars[p_i].raceRef = data.data.playchar.race_build.race.name;
+							}
+							$scope.users[$scope.curUs_in].playchars[p_i].race_build.race.features = data.data.race_features;
+							$scope.users[$scope.curUs_in].playchars[p_i].fetchDetails = true;
+							$scope.$parent.chara = $scope.users[$scope.curUs_in].playchars[p_i] = data.data.playchar;
 						}
 					});
 				}
@@ -982,7 +987,7 @@
 		};
 
 		this.ClassProfsCheck = function(){
-			while (this.chosenProfs.length > this.skillCap) {
+			while (this.chosenProfs != typeof('undefined') && this.chosenProfs.length > this.skillCap) {
 				this.chosenProfs.shift();
 			}
 		};
@@ -1100,7 +1105,7 @@
 				"u_i": $scope.$parent.delCharUIn,
 				"p_i": $scope.$parent.delCharIn
 			};
-			$http.post("/characters/delete", sendData).then(function(data){
+			$http.post("/index.php/characters/delete", sendData).then(function(data){
 				if (data.data.success){
 					$scope.users[data.data.u_i].playchars.splice(data.data.p_i, 1);
 					$scope.$parent.showDetails = false;
