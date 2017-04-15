@@ -700,6 +700,12 @@
 
 				if (allCheck){
 					$scope.InsStep++;
+					this.showDetails = false;
+					this.detail_img = "";
+					var detImg = angular.element(document.querySelector("#detail_img"));
+					detImg.removeClass("fade_in");
+					detImg.removeClass("fade_out");
+					detImg.addClass("fade_nu");
 				}
 			}
 		};
@@ -947,6 +953,12 @@
 			this.RevealClassPath(c_i);
 			this.HideOtherClassPaths(c_i);
 			this.curClassIndex = c_i;
+			this.showDetails = true;
+			this.detail_img = $scope.ch_classes[c_i].img_path;
+			var detImg = angular.element(document.querySelector("#detail_img"));
+			detImg.removeClass("fade_in");
+			detImg.removeClass("fade_out");
+			detImg.addClass("fade_nu");
 		};
 
 		this.RevealClassPath = function(c_i){
@@ -1103,7 +1115,7 @@
 			detImg.removeClass("fade_out");
 			detImg.addClass("fade_nu");
 		};
-		
+
 	}]).directive('detailimgload', function(){
 		return {
 			restrict: 'A',
