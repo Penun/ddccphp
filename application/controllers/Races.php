@@ -6,7 +6,7 @@ class Races extends MY_Controller {
         $this->load->model('race_model');
 	}
 
-    public function list(){
+    public function listr(){
         $resp['success'] = FALSE;
         $resp['error'] = '';
         $races = $this->race_model->getRaces();

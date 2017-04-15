@@ -6,7 +6,7 @@ class Backgrounds extends MY_Controller {
         $this->load->model('background_model');
 	}
 
-    public function list(){
+    public function listr(){
         $resp['success'] = FALSE;
         $resp['error'] = '';
         $BGs = $this->background_model->getBGs();

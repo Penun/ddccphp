@@ -6,7 +6,7 @@ class Classes extends MY_Controller {
         $this->load->model('class_model');
 	}
 
-    public function list(){
+    public function listr(){
         $resp['success'] = FALSE;
         $resp['error'] = '';
         $classes = $this->class_model->getClasses();

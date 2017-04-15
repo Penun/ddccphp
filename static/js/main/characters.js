@@ -352,8 +352,7 @@
 								if (opts[j].type == "skill_prof"){
 									$scope.users[this.set_u_in].playchars[this.set_p_in].showBonuses[opts[j].option.prof] = true;
 								}
-							}			$scope.curChars = $scope.users[$scope.curUs_in].playchars;
-
+							}
 						}
 					}
 				}
@@ -370,32 +369,23 @@
 			}
 			if ($scope.users[u_i].fetched == null){
 				sendData = {
-					"user_id": $scope.users[u_i].user_id
+					"user_id": $scope.users[u_i].user_id,
+					"u_i": u_i
 				}
 				$http.post("/index.php/characters", sendData).then(function(data){
 					if (data.data.success){
-						for (var i = 0; i < $scope.users.length; i++){
-							if ($scope.users[i].user_id == data.data.user_id){
-								$scope.curChars = $scope.users[i].playchars = data.data.playchars;
-								$scope.users[i].fetched = true;
-								$scope.showChars = true;
-								var charCol = angular.element(document.querySelector("#character_col"));
-								charCol.removeClass("fade_nu");
-								charCol.removeClass("fade_out");
-								charCol.addClass("fade_in");
-								break;
-							}
-						}
+						$scope.curChars = $scope.users[data.data.u_i].playchars = data.data.playchars;
+						$scope.users[data.data.u_i].fetched = true;
+						$scope.showChars = true;
+						var charCol = angular.element(document.querySelector("#character_col"));
+						charCol.removeClass("fade_nu");
+						charCol.removeClass("fade_out");
+						charCol.addClass("fade_in");
 					} else {
 						var charCol = angular.element(document.querySelector("#character_col"));
 						if (data.data.error == "1"){
-							for (var i = 0; i < $scope.users.length; i++){
-								if ($scope.users[i].user_id == data.data.user_id){
-									$scope.users[i].fetched = true;
-									break;
-								}
-							}
-							$scope.curChars = [];
+							$scope.users[data.data.u_i].fetched = true;
+							$scope.curChars = $scope.users[data.data.u_i].playchars = [];
 							$scope.showChars = true;
 							charCol.removeClass("fade_nu");
 							charCol.removeClass("fade_out");
@@ -462,6 +452,7 @@
 			$scope.delCharIn = this.set_p_in;
 			$scope.delCharUIn = this.set_u_in;
 			$scope.delChar = $scope.users[this.set_u_in].playchars[this.set_p_in];
+			$scope.showDetails = false;
 			$scope.overScreen = 3;
 		};
 
@@ -475,7 +466,7 @@
 
 		this.CheckRaces = function(){
 			if ($scope.races == null){
-				$http.get("/index.php/races/list").then(function(data){
+				$http.get("/index.php/races/listr").then(function(data){
 					if (data.data.success){
 						$scope.races = data.data.races;
 						if (!$scope.addChar.is_partial){
@@ -516,6 +507,9 @@
 		this.submitText = "Next";
 		this.pages = {};
 		this.pages.insCharDet = {};
+		this.detail_img = "";
+		this.detail_desc = "";
+		this.showDetails = false;
 
 		this.CurStep = function(cuSt){
 			return $scope.InsStep === cuSt;
@@ -561,15 +555,13 @@
 			}
 
 			if ($scope.ch_classes == null){
-				$http.get("/index.php/classes/list").then(function(data){
+				$http.get("/index.php/classes/listr").then(function(data){
 					if (data.data.success){
 						$scope.ch_classes = data.data.classes;
-						//$scope.InsStep++;
 					}
 				});
-			}// else {
-			//	$scope.InsStep++;
-			//}
+			}
+
 			if ($scope.races != typeof('undefined') && $scope.races.length > 0){
 				$scope.InsStep++;
 			}
@@ -630,7 +622,7 @@
 				}
 
 				if ($scope.BGs == null){
-					$http.get("/index.php/backgrounds/list").then(function(data){
+					$http.get("/index.php/backgrounds/listr").then(function(data){
 						if (data.data.success){
 							$scope.BGs = data.data.backgrounds;
 						}
@@ -641,7 +633,7 @@
 					$scope.InsStep++;
 				}
 			} else {
-				alert("Oh @#$%#@!! I'm Broken!! YOU STUPID ASS MONKEY!!!");
+				alert("Oh @#$%#@!! I'm Broken!!");
 			}
 		};
 
@@ -741,7 +733,7 @@
 						"c_in": this.curClassIndex,
 						"c_id": $scope.ch_classes[this.curClassIndex].class_id
 					};
-					$http.post("/index.php/proficiencies/class", sendData).then(function(data){
+					$http.post("/index.php/proficiencies/classp", sendData).then(function(data){
 						if (data.data.success){
 							$scope.ch_classes[data.data.c_in].skillProfs = data.data.class_profs;
 						}
@@ -759,7 +751,7 @@
 
 				$scope.InsStep++;
 			} else {
-				alert("Oh @#$%#@!! I'm Broken!! YOU STUPID ASS MONKEY!!!");
+				alert("Oh @#$%#@!! I'm Broken!!");
 			}
 		};
 
@@ -804,6 +796,7 @@
 							} else {
 								$scope.users[$scope.curUs_in].playchars = [data.data.playchar];
 							}
+							$scope.curChars = $scope.users[$scope.curUs_in].playchars;
 							$scope.chara = data.data.playchar;
 						}
 					});
@@ -870,9 +863,10 @@
 				$scope.InsStep = 1;
 				this.chHeIn = "";
 				this.chHeFe = "";
-
+				this.showDetails = false;
+				this.detail_img = "";
 			} else {
-				alert("Oh @#$%#@!! I'm Broken!! YOU STUPID ASS MONKEY!!!");
+				alert("Oh @#$%#@!! I'm Broken!!");
 			}
 		};
 
@@ -885,6 +879,8 @@
 			this.minWeight = $scope.races[r_i].min_weight;
 			this.maxWeight = $scope.races[r_i].max_weight;
 			this.curRaceIndex = r_i;
+			this.showDetails = true;
+			this.detail_img = $scope.races[r_i].img_path;
 
 			var finFeet = Math.floor($scope.races[r_i].min_height_in / 12);
 			var finInch = $scope.races[r_i].min_height_in % 12;
@@ -1091,6 +1087,8 @@
 			this.chHeIn = "";
 			this.chHeFe = "";
 			$scope.InsStep = 1;
+			this.showDetails = false;
+			this.detail_img = "";
 		};
 	}]);
 
@@ -1108,7 +1106,6 @@
 			$http.post("/index.php/characters/delete", sendData).then(function(data){
 				if (data.data.success){
 					$scope.users[data.data.u_i].playchars.splice(data.data.p_i, 1);
-					$scope.$parent.showDetails = false;
 					var detCol = angular.element(document.querySelector("#detail_col"));
 					detCol.removeClass("fade_nu");
 					detCol.removeClass("fade_in");
@@ -1122,6 +1119,7 @@
 		};
 
 		this.Cancel = function(){
+			$scope.$parent.showDetails = true;
 			$scope.$parent.delCharIn = -1;
 			$scope.$parent.delCharUIn = -1;
 			$scope.$parent.delChar = {};

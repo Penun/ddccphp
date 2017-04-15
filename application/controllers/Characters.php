@@ -12,11 +12,12 @@ class Characters extends MY_Controller {
         $resp['success'] = FALSE;
         $resp['error'] = '';
         $resp['playchars'] = $this->playchar_model->getNonNPCChars($subm_data['user_id']);
-        $resp['user_id'] = $subm_data['user_id'];
 
         if ($resp['playchars'] !== FALSE){
+			$resp['u_i'] = $subm_data['u_i'];
             $resp['success'] = TRUE;
         } else {
+			$resp['u_i'] = $subm_data['u_i'];
 			$resp['error'] = "1";
 		}
 

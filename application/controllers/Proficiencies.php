@@ -74,7 +74,7 @@ class Proficiencies extends MY_Controller {
         echo json_encode($resp);
 	}
 
-	public function class(){
+	public function classp(){
 		$subm_data = json_decode(file_get_contents('php://input'), TRUE);
 		$resp['success'] = FALSE;
 		$resp['error'] = '';

@@ -40,8 +40,8 @@ class Auth {
 	{
 		if($this->login == FALSE)
 		{
-			header('Refresh:0; url=http://127.0.0.1/index.php/login');
-			//header('Location: http://www.dafrank.com/login');
+			header('Location: http://192.168.0.3/index.php/login');
+			//header('Location: http://www.dafrank.com/index.php/login');
 			exit();
 		}
 		else

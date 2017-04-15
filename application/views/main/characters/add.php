@@ -1,7 +1,9 @@
-<div ng-show="mainCont.CurOverScreen(2)" class="sixty_he">
-	<div class="left_page_col">
+<div ng-show="mainCont.CurOverScreen(2)" ng-controller="charInsertController as chInCont" class="sixty_he">
+	<div class="left_page_col left_page_det" ng-show="chInCont.showDetails">
+		<img ng-src="{{chInCont.detail_img}}" class="detail_img" />
+		<p>{{chInCont.detail_desc}}</p>
 	</div>
-	<div ng-controller="charInsertController as chInCont">
+	<div>
 		<div ng-show="chInCont.CurStep(1)" class="right_page fade_in">
 			<?php $this->load->view("main/characters/add/playchar_in.php"); ?>
 		</div>

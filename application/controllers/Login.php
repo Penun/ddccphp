@@ -13,12 +13,9 @@ class Login extends CI_Controller {
 	public function index() {
         if ($this->auth->is_logged_in())
         {
-            header('Refresh:0; url=http://127.0.0.1/index.php/main');
-            //header('Location: http://www.dafrank.com');
+            //header('Location: http://www.dafrank.com/index.php/main');
+            header('Location: http://192.168.0.3/index.php/main');
         }
-
-		//$salt = $this->config->item('salt');
-		//$data['pass'] = sha1($salt . 'test');
 
         $this->load->library('form_validation');
 		$subm_data = json_decode(file_get_contents('php://input'), true);

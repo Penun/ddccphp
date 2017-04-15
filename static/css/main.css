@@ -85,6 +85,10 @@ body {
 	width: 47%;
 }
 
+.left_page_det {
+	text-align: center;
+}
+
 .left_page_colr {
 	position: absolute;
 	right: 0%;
@@ -222,6 +226,27 @@ span.char_right {
 	padding-right: 16%;
 }
 
+div.skill_div {
+	width: 60%;
+	margin-left: 20%;
+	margin-bottom: 5px;
+	padding-bottom: 5px;
+	background-image: url("../img/pencil_underline.png");
+	background-position: center bottom;
+	background-size: 125% 30%;
+	background-repeat: no-repeat;
+	text-align: left;
+}
+
+span.skill_span {
+	padding-left: 10px;
+	padding-right: 10px;
+	width: auto;
+	display: initial;
+	text-align: right;
+	float: right;
+}
+
 p {
 	width: 75%;
 	text-align: center;
@@ -241,6 +266,7 @@ p.underline_center {
     background-size: 70% 20%;
     background-position: center bottom;
     padding-bottom: 8px;
+    margin-bottom: 5px;
 }
 
 img.p_underline {
@@ -250,6 +276,14 @@ img.p_underline {
 img.p_underline_f {
 	width: 100%;
 	height: 50%;
+}
+
+img.detail_img {
+	position: fixed;
+	width: auto;
+	max-width: 40%;
+	height: auto;
+	max-height: 75%;
 }
 
 div.check{
