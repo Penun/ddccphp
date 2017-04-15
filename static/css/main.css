@@ -87,6 +87,7 @@ body {
 
 .left_page_det {
 	text-align: center;
+	height: 100%
 }
 
 .left_page_colr {
@@ -279,11 +280,10 @@ img.p_underline_f {
 }
 
 img.detail_img {
-	position: fixed;
 	width: auto;
-	max-width: 40%;
+	max-width: 95%;
 	height: auto;
-	max-height: 75%;
+	max-height: 90%;
 }
 
 div.check{

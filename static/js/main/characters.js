@@ -1,5 +1,6 @@
 (function(){
 	var app = angular.module('ddchar_characters', []);
+
 	app.controller('mainCharController', ['$http', '$scope', '$rootScope', function($http, $scope, $rootScope){
 		$scope.overScreen = 1;
 		$scope.races = null;
@@ -865,6 +866,10 @@
 				this.chHeFe = "";
 				this.showDetails = false;
 				this.detail_img = "";
+				var detImg = angular.element(document.querySelector("#detail_img"));
+				detImg.removeClass("fade_in");
+				detImg.removeClass("fade_out");
+				detImg.addClass("fade_nu");
 			} else {
 				alert("Oh @#$%#@!! I'm Broken!!");
 			}
@@ -881,6 +886,10 @@
 			this.curRaceIndex = r_i;
 			this.showDetails = true;
 			this.detail_img = $scope.races[r_i].img_path;
+			var detImg = angular.element(document.querySelector("#detail_img"));
+			detImg.removeClass("fade_in");
+			detImg.removeClass("fade_out");
+			detImg.addClass("fade_nu");
 
 			var finFeet = Math.floor($scope.races[r_i].min_height_in / 12);
 			var finInch = $scope.races[r_i].min_height_in % 12;
@@ -1089,8 +1098,25 @@
 			$scope.InsStep = 1;
 			this.showDetails = false;
 			this.detail_img = "";
+			var detImg = angular.element(document.querySelector("#detail_img"));
+			detImg.removeClass("fade_in");
+			detImg.removeClass("fade_out");
+			detImg.addClass("fade_nu");
 		};
-	}]);
+		
+	}]).directive('detailimgload', function(){
+		return {
+			restrict: 'A',
+			link: function(scope, element, attrs){
+				element.bind('load', function(){
+					var detImg = angular.element(document.querySelector("#detail_img"));
+					detImg.removeClass("fade_nu");
+					detImg.removeClass("fade_out");
+					detImg.addClass("fade_in");
+				});
+			}
+		};
+	});
 
 //	app.controller('charBuildController', ['$http', '$scope', function($http, $scope){
 

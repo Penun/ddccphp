@@ -1,6 +1,6 @@
 <div ng-show="mainCont.CurOverScreen(2)" ng-controller="charInsertController as chInCont" class="sixty_he">
 	<div class="left_page_col left_page_det" ng-show="chInCont.showDetails">
-		<img ng-src="{{chInCont.detail_img}}" class="detail_img" />
+		<img ng-src="{{chInCont.detail_img}}" class="detail_img" id="detail_img" detailimgload />
 		<p>{{chInCont.detail_desc}}</p>
 	</div>
 	<div>
