@@ -7,7 +7,18 @@ class Proficiencies extends MY_Controller {
         $this->load->model('proficiencies_model');
 	}
 
-    public function index(){}
+    public function index(){
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$skills = $this->proficiencies_model->getAll();
+		if ($skills !== FALSE){
+			$resp['proficiencies'] = $skills;
+			$resp['success'] = TRUE;
+		}
+
+		header("Content-Type: application/json");
+        echo json_encode($resp);
+	}
 
     public function chosen(){
         $subm_data = json_decode(file_get_contents('php://input'), TRUE);
@@ -67,6 +78,45 @@ class Proficiencies extends MY_Controller {
 		$skills = $this->proficiencies_model->getSkills();
 		if ($skills !== FALSE){
 			$resp['proficiencies'] = $skills;
+			$resp['success'] = TRUE;
+		}
+
+		header("Content-Type: application/json");
+        echo json_encode($resp);
+	}
+
+	public function tools(){
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$toolss = $this->proficiencies_model->getTools();
+		if ($toolss !== FALSE){
+			$resp['proficiencies'] = $toolss;
+			$resp['success'] = TRUE;
+		}
+
+		header("Content-Type: application/json");
+        echo json_encode($resp);
+	}
+
+	public function armor(){
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$armor = $this->proficiencies_model->getArmor();
+		if ($armor !== FALSE){
+			$resp['proficiencies'] = $armor;
+			$resp['success'] = TRUE;
+		}
+
+		header("Content-Type: application/json");
+        echo json_encode($resp);
+	}
+
+	public function weapons(){
+		$resp['success'] = FALSE;
+		$resp['error'] = '';
+		$weapons = $this->proficiencies_model->getWeapons();
+		if ($weapons !== FALSE){
+			$resp['proficiencies'] = $weapons;
 			$resp['success'] = TRUE;
 		}
 

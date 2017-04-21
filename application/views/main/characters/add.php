@@ -14,12 +14,15 @@
 			<?php $this->load->view("main/characters/add/race_in.php"); ?>
 		</div>
 		<div ng-show="chInCont.CurStep(4)" class="right_page fade_in">
-			<?php $this->load->view("main/characters/add/sel_class.php"); ?>
+			<?php $this->load->view("main/characters/add/halfelf_in.php"); ?>
 		</div>
 		<div ng-show="chInCont.CurStep(5)" class="right_page fade_in">
-			<?php $this->load->view("main/characters/add/sel_bg.php"); ?>
+			<?php $this->load->view("main/characters/add/sel_class.php"); ?>
 		</div>
 		<div ng-show="chInCont.CurStep(6)" class="right_page fade_in">
+			<?php $this->load->view("main/characters/add/sel_bg.php"); ?>
+		</div>
+		<div ng-show="chInCont.CurStep(7)" class="right_page fade_in">
 			<?php $this->load->view("main/characters/add/rev_ins.php"); ?>
 		</div>
 		<div ng-click="chInCont.Cancel()" class="cancel_butt button"><span class="button_text">X</span></div>

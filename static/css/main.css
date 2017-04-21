@@ -28,18 +28,18 @@ body {
 }
 
 @keyframes fade_in {
-	0% {opacity: 0}
-	100% {opacity: 1}
+	0% { opacity: 0; }
+	100% { opacity: 1; }
 }
 
 @-webkit-keyframes fade_in {
-	0% {opacity: 0}
-	100% {opacity: 1}
+	0% { opacity: 0; }
+	100% { opacity: 1; }
 }
 
 @-moz-keyframes fade_in {
-	0% {opacity: 0}
-	100% {opacity: 1}
+	0% { opacity: 0; }
+	100% { opacity: 1; }
 }
 
 @keyframes fade_out {
@@ -115,6 +115,10 @@ body {
 	padding-left: 2em;
 	overflow: auto;
 	height: 53vh;
+}
+
+.right_page_in_add {
+	height: 57vh;
 }
 
 .page {
@@ -369,6 +373,16 @@ select {
 	min-width: 200px;
 	font-family: 'Kalam', cursive;
 	overflow: hidden;
+}
+
+optgroup[label]{
+	font-size: 120%;
+	color: #DB7237;
+}
+
+option[label]{
+	font-size: 83%;
+	color: #493E25;
 }
 
 input {

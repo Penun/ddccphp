@@ -344,15 +344,26 @@
 						}
 					}
 				});
-				if ($scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features != null) {
-					for (var i = 0; i < $scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features.length; i++){
-						var feat = $scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features[i];
-						if (feat.feature.options != null || feat.feature.options != ""){
-							var opts = JSON.parse(feat.feature.options);
-							for (var j = 0; j < opts.length; j++){
-								if (opts[j].type == "skill_prof"){
-									$scope.users[this.set_u_in].playchars[this.set_p_in].showBonuses[opts[j].option.prof] = true;
+				if ($scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.race_id != 7){
+					if ($scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features != null) {
+						for (var i = 0; i < $scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features.length; i++){
+							var feat = $scope.users[this.set_u_in].playchars[this.set_p_in].race_build.race.features[i];
+							if (feat.feature.options != null && feat.feature.options != ""){
+								var opts = JSON.parse(feat.feature.options);
+								for (var j = 0; j < opts.length; j++){
+									if (opts[j].type == "skill_prof"){
+										$scope.users[this.set_u_in].playchars[this.set_p_in].showBonuses[opts[j].option.prof] = true;
+									}
 								}
+							}
+						}
+					}
+				} else {
+					if ($scope.users[this.set_u_in].playchars[this.set_p_in].race_build.options != null && $scope.users[this.set_u_in].playchars[this.set_p_in].race_build.options != ""){
+						var opts = JSON.parse($scope.users[this.set_u_in].playchars[this.set_p_in].race_build.options);
+						for (var j = 0; j < opts.length; j++){
+							if (opts[j].type == "skill_prof"){
+								$scope.users[this.set_u_in].playchars[this.set_p_in].showBonuses[opts[j].option.prof] = true;
 							}
 						}
 					}
@@ -430,12 +441,20 @@
 				"is_partial": true
 			};
 			this.CheckRaces();
+			this.CheckSkills();
+			this.CheckTools();
+			this.CheckArmor();
+			this.CheckWeapons();
 		};
 
 		this.EditChar = function(){
 			$scope.addChar = JSON.parse(JSON.stringify($scope.users[this.set_u_in].playchars[this.set_p_in]));
 			$scope.addChar.is_partial = false;
 			$scope.overScreen = 2;
+			var detCol = angular.element(document.querySelector("#detail_col"));
+			detCol.removeClass("fade_nu");
+			detCol.removeClass("fade_in");
+			detCol.addClass("fade_out");
 			var sendData = {
 				"p_in": this.set_p_in,
 				"u_in": this.set_u_in,
@@ -447,6 +466,10 @@
 				}
 			});
 			this.CheckRaces();
+			this.CheckSkills();
+			this.CheckTools();
+			this.CheckArmor();
+			this.CheckWeapons();
 		};
 
 		this.DeleteChar = function(){
@@ -496,6 +519,46 @@
 			}
 		};
 
+		this.CheckSkills = function(){
+			if ($scope.skillProfs == null){
+				$http.get("/index.php/proficiencies/skills").then(function(data){
+					if (data.data.success){
+						$scope.skillProfs = data.data.proficiencies;
+					}
+				});
+			}
+		};
+
+		this.CheckTools = function(){
+			if ($scope.toolProfs == null){
+				$http.get("/index.php/proficiencies/tools").then(function(data){
+					if (data.data.success){
+						$scope.toolProfs = data.data.proficiencies;
+					}
+				});
+			}
+		}
+
+		this.CheckArmor = function(){
+			if ($scope.armorProfs == null){
+				$http.get("/index.php/proficiencies/armor").then(function(data){
+					if (data.data.success){
+						$scope.armorProfs = data.data.proficiencies;
+					}
+				});
+			}
+		}
+
+		this.CheckWeapons = function(){
+			if ($scope.weaponProfs == null){
+				$http.get("/index.php/proficiencies/weapons").then(function(data){
+					if (data.data.success){
+						$scope.weaponProfs = data.data.proficiencies;
+					}
+				});
+			}
+		}
+
 		this.CurOverScreen = function(ovSc){
 			return $scope.overScreen === ovSc;
 		};
@@ -511,6 +574,7 @@
 		this.detail_img = "";
 		this.detail_desc = "";
 		this.showDetails = false;
+		this.allProfs = [];
 
 		this.CurStep = function(cuSt){
 			return $scope.InsStep === cuSt;
@@ -564,7 +628,20 @@
 			}
 
 			if ($scope.races != typeof('undefined') && $scope.races.length > 0){
-				$scope.InsStep++;
+				if (!$scope.$parent.addChar.is_partial){
+					for (var i = 0; i < $scope.races.length; i++){
+						if ($scope.races[i].race_id == $scope.$parent.addChar.race_build.race.race_id){
+							var temp = $scope.$parent.addChar.race_build.race.sub_race;
+							this.UpdateSelRace(i);
+							$scope.$parent.addChar.race_build.race.sub_race = temp;
+							this.chHeFe = Math.floor($scope.$parent.addChar.race_build.height_in / 12);
+							this.chHeIn = $scope.$parent.addChar.race_build.height_in % 12;
+							break;
+						}
+					}
+				}
+
+				this.NextStep();
 			}
 		};
 
@@ -572,18 +649,7 @@
 			var allCheck = false;
 			$scope.$parent.addChar.race_build.race.race_id = Number($scope.$parent.addChar.race_build.race.race_id);
 
-			if (!$scope.$parent.addChar.is_partial && (this.curRaceIndex == null || typeof(this.curRaceIndex) == 'undefined')){
-				for (var i = 0; i < $scope.races.length; i++){
-					if ($scope.races[i].race_id == $scope.$parent.addChar.race_build.race.race_id){
-						this.UpdateSelRace(i);
-						this.chHeFe = Math.floor($scope.$parent.addChar.race_build.height_in / 12);
-						this.chHeIn = $scope.$parent.addChar.race_build.height_in % 12;
-						break;
-					}
-				}
-			}
-
-			if ($scope.races[this.curRaceIndex].sub_races != null){
+			if ($scope.races[this.curRaceIndex].sub_races != null && $scope.races[this.curRaceIndex].sub_races != typeof('undefined')){
 				for (var j = 0; j < $scope.races[this.curRaceIndex].sub_races.length; j++){
 					if ($scope.races[this.curRaceIndex].sub_races[j].sub_race_id == $scope.$parent.addChar.race_build.sub_race.sub_race_id){
 						$scope.$parent.addChar.race_build.sub_race.sub_race_id = Number($scope.$parent.addChar.race_build.sub_race.sub_race_id);
@@ -597,14 +663,6 @@
 			}
 
 			if (allCheck){
-				if ($scope.skillProfs == null){
-					$http.get("/index.php/proficiencies/skills").then(function(data){
-						if (data.data.success){
-							$scope.skillProfs = data.data.proficiencies;
-						}
-					});
-				}
-
 				if ($scope.races[this.curRaceIndex].features == null){
 					var sendData = {
 						"r_in": this.curRaceIndex,
@@ -630,8 +688,12 @@
 					});
 				}
 
+				this.allProfs = $scope.skillProfs.concat($scope.toolProfs);
+				this.allProfs = this.allProfs.concat($scope.armorProfs);
+				this.allProfs = this.allProfs.concat($scope.weaponProfs);
+
 				if ($scope.ch_classes != typeof('undefined') && $scope.ch_classes.length > 0){
-					$scope.InsStep++;
+					this.NextStep();
 				}
 			} else {
 				alert("Oh @#$%#@!! I'm Broken!!");
@@ -664,49 +726,54 @@
 			}
 
 			if (allCheck){
-				if ($scope.$parent.addChar.race_build.race.race_id == 7){
-					if (this.halfElfAbil.length != 2){
-						allCheck = false;
-					} else {
-						var options = [];
-
-						for (var i = 0; i < this.halfElfAbil.length; i++){
-							var abil_mod = {
-								"type": "ability_mod",
-								"option": {
-									"mod": this.halfElfAbil[i],
-									"mod_val": 1
-								}
-							};
-							options.push(abil_mod);
-						}
-
-						$scope.$parent.addChar.race_build.options = JSON.stringify(options);
-					}
-				} else {
-					delete $scope.$parent.addChar.race_build.options;
-				}
+				delete $scope.$parent.addChar.race_build.options;
 
 				if (!$scope.$parent.addChar.is_partial){
 					for (var i = 0; i < $scope.ch_classes.length; i++){
 						if ($scope.ch_classes[i].class_id == $scope.$parent.addChar.class_build.class.class_id){
-							this.RevealClassPath(i);
-							this.HideOtherClassPaths(i);
-							this.curClassIndex = i;
+							var temp = $scope.$parent.addChar.class_build.class_path;
+							this.UpdateSelClass(i);
+							$scope.$parent.addChar.class_build.class_path = temp;
 							break;
 						}
 					}
 				}
 
-				if (allCheck){
-					$scope.InsStep++;
-					this.showDetails = false;
-					this.detail_img = "";
-					var detImg = angular.element(document.querySelector("#detail_img"));
-					detImg.removeClass("fade_in");
-					detImg.removeClass("fade_out");
-					detImg.addClass("fade_nu");
+				this.NextStep();
+			}
+		};
+
+		this.SubmitHElfInfo = function(){
+			if (this.halfElfAbil.length != 2 || this.halfElfSkil.length != 2){
+				allCheck = false;
+			} else {
+				var options = [];
+
+				for (var i = 0; i < this.halfElfAbil.length; i++){
+					var abil_mod = {
+						"type": "ability_mod",
+						"option": {
+							"mod": this.halfElfAbil[i],
+							"mod_val": 1
+						}
+					};
+					options.push(abil_mod);
 				}
+
+				for (var i = 0; i < this.halfElfSkil.length; i++){
+					var skil_mod = {
+						"type": this.halfElfSkil[i].type + "_prof",
+						"option": {
+							"prof": this.halfElfSkil[i].s_code
+						}
+					};
+
+					options.push(skil_mod);
+				}
+
+				$scope.$parent.addChar.race_build.options = options;
+
+				this.NextStep();
 			}
 		};
 
@@ -714,7 +781,15 @@
 			var allCheck = false;
 			$scope.$parent.addChar.class_build.class.class_id = Number($scope.$parent.addChar.class_build.class.class_id);
 
+			var need_cp = false;
 			if ($scope.$parent.addChar.level >= 3){
+				need_cp = true;
+			} else if ($scope.$parent.addChar.class_build.class.class_id == 3){
+				need_cp = true;
+			} else if ($scope.$parent.addChar.level == 2 && $scope.$parent.addChar.class_build.class.class_id == 12){
+				need_cp = true;
+			}
+			if (need_cp){
 				if ($scope.ch_classes[this.curClassIndex].class_paths != null){
 					for (var j = 0; j < $scope.ch_classes[this.curClassIndex].class_paths.length; j++){
 						if ($scope.ch_classes[this.curClassIndex].class_paths[j].class_path_id == $scope.$parent.addChar.class_build.class_path.class_path_id){
@@ -756,7 +831,7 @@
 					}
 				}
 
-				$scope.InsStep++;
+				this.NextStep();
 			} else {
 				alert("Oh @#$%#@!! I'm Broken!!");
 			}
@@ -774,7 +849,7 @@
 					});
 				}
 			}
-			$scope.InsStep++;
+			this.NextStep();
 		};
 
 		this.SaveChar = function(){
@@ -791,6 +866,9 @@
 			}
 
 			if (allCheck){
+				if ($scope.$parent.addChar.race_build.options != null && $scope.$parent.addChar.race_build.options != typeof('undefined')){
+					$scope.$parent.addChar.race_build.options = JSON.stringify($scope.$parent.addChar.race_build.options);
+				}
 				var sendData = {
 					"playchar": $scope.$parent.addChar
 				};
@@ -962,7 +1040,15 @@
 		};
 
 		this.RevealClassPath = function(c_i){
+			var reveal = false;
 			if ($scope.$parent.addChar.level >= 3){
+				reveal = true;
+			} else if ($scope.ch_classes[c_i].class_id == 3){
+				reveal = true;
+			} else if ($scope.$parent.addChar.level == 2 && $scope.ch_classes[c_i].class_id == 12){
+				reveal = true;
+			}
+			if (reveal){
 				if ($scope.ch_classes[c_i].showPaths == null){
 					var sendData = {
 						"c_id": $scope.ch_classes[c_i].class_id
@@ -1009,12 +1095,21 @@
 			}
 		};
 
+		this.HElfAbilCheck = function(){
+			while (this.halfElfAbil != typeof('undefined') && this.halfElfAbil.length > 2) {
+				this.halfElfAbil.shift();
+			}
+		};
+
+		this.HElfSkilCheck = function(){
+			while (this.halfElfSkil != typeof('undefined') && this.halfElfSkil.length > 2) {
+				this.halfElfSkil.shift();
+			}
+		};
+
 		this.RevealBGDet = function(b_i){
 			if ($scope.BGs[b_i].showDets == null || !$scope.BGs[b_i].showDets){
 				$scope.BGs[b_i].showDets = true;
-				this.HideOtherBGDets(b_i);
-			} else {
-				$scope.BGs[b_i].showDets = false;
 			}
 		};
 
@@ -1050,17 +1145,101 @@
 		};
 
 		this.BackStep = function(){
-			$scope.InsStep--;
+			switch($scope.InsStep){
+				case 2:
+					this.showDetails = false;
+					this.detail_img = "";
+					$scope.InsStep--;
+					break;
+				case 5:
+					if ($scope.$parent.addChar.race_build.race.race_id != 7){
+						$scope.InsStep -= 2;
+					} else {
+						$scope.InsStep--;
+					}
+					this.detail_img = $scope.races[this.curRaceIndex].img_path;
+					this.showDetails = true;
+					var detImg = angular.element(document.querySelector("#detail_img"));
+					detImg.removeClass("fade_in");
+					detImg.removeClass("fade_out");
+					detImg.addClass("fade_nu");
+					break;
+				default:
+					$scope.InsStep--;
+					break;
+			}
 		};
+
+		this.NextStep = function(){
+			switch($scope.InsStep){
+				case 1:
+					if (this.curRaceIndex != null && this.curRaceIndex != typeof('undefined')){
+						this.showDetails = true;
+						this.detail_img = $scope.races[this.curRaceIndex].img_path;
+					}
+					$scope.InsStep++;
+					break;
+				case 3:
+					if ($scope.$parent.addChar.race_build.race.race_id != 7){
+						$scope.InsStep += 2;
+						var detImg = angular.element(document.querySelector("#detail_img"));
+						detImg.removeClass("fade_in");
+						detImg.removeClass("fade_out");
+						detImg.addClass("fade_nu");
+						if (this.curClassIndex != null && this.curClassIndex != typeof('undefined')){
+							this.showDetails = true;
+							this.detail_img = $scope.ch_classes[this.curClassIndex].img_path;
+						} else {
+							this.showDetails = false;
+							this.detail_img = "";
+						}
+					} else {
+						$scope.InsStep++;
+					}
+					break;
+				case 4:
+					this.showDetails = false;
+					var detImg = angular.element(document.querySelector("#detail_img"));
+					detImg.removeClass("fade_in");
+					detImg.removeClass("fade_out");
+					detImg.addClass("fade_nu");
+					if (this.curClassIndex != null && this.curClassIndex != typeof('undefined')){
+						this.showDetails = true;
+						this.detail_img = $scope.ch_classes[this.curClassIndex].img_path;
+					} else {
+						this.showDetails = false;
+						this.detail_img = "";
+					}
+					$scope.InsStep++;
+					break;
+				default:
+					$scope.InsStep++;
+					break;
+			}
+		}
 
 		this.GenerateCurClassProfs = function(){
 			var raceProfs = [];
-			for (var i = 0; i < $scope.races[this.curRaceIndex].features.length; i++){
-				for (var j = 0; j < $scope.races[this.curRaceIndex].features[i].feature.options.length; j++){
-					if ($scope.races[this.curRaceIndex].features[i].feature.options[j].type == "skill_prof"){
-						raceProfs.push($scope.races[this.curRaceIndex].features[i].feature.options[j]);
-						for (var k = 0; k < $scope.BGs[this.curBGIndex].proficiencies.length; k++){
-							if ($scope.races[this.curRaceIndex].features[i].feature.options[j].option.prof == $scope.BGs[this.curBGIndex].proficiencies[k].proficiency.s_code){
+			if ($scope.$parent.addChar.race_build.race.race_id != 7){
+				for (var i = 0; i < $scope.races[this.curRaceIndex].features.length; i++){
+					for (var j = 0; j < $scope.races[this.curRaceIndex].features[i].feature.options.length; j++){
+						if ($scope.races[this.curRaceIndex].features[i].feature.options[j].type == "skill_prof"){
+							raceProfs.push($scope.races[this.curRaceIndex].features[i].feature.options[j]);
+							for (var k = 0; k < $scope.BGs[this.curBGIndex].proficiencies.length; k++){
+								if ($scope.races[this.curRaceIndex].features[i].feature.options[j].option.prof == $scope.BGs[this.curBGIndex].proficiencies[k].proficiency.s_code){
+									this.skillCap++;
+									break;
+								}
+							}
+						}
+					}
+				}
+			} else {
+				for (var i = 0; i < $scope.$parent.addChar.race_build.options.length; i++){
+					if ($scope.$parent.addChar.race_build.options[i].type == "skill_prof"){
+						raceProfs.push($scope.$parent.addChar.race_build.options[i]);
+						for (var j = 0; j < $scope.BGs[this.curBGIndex].proficiencies.length; j++){
+							if ($scope.$parent.addChar.race_build.options[i].option.prof == $scope.BGs[this.curBGIndex].proficiencies[j].proficiency.s_code){
 								this.skillCap++;
 								break;
 							}

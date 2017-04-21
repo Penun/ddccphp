@@ -51,7 +51,47 @@ class Proficiencies_model extends CI_Model {
         }
     }
 
+    public function getAll(){
+        $result = $this->db->get($this->proficiency_table);
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
     public function getSkills(){
+        $this->db->where('type', 'skill');
+        $result = $this->db->get($this->proficiency_table);
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getTools(){
+        $this->db->where('type', 'tool');
+        $result = $this->db->get($this->proficiency_table);
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getArmor(){
+        $this->db->where('type', 'armor');
+        $result = $this->db->get($this->proficiency_table);
+        if ($result->num_rows() > 0){
+            return $result->result_array();
+        } else {
+            return FALSE;
+        }
+    }
+
+    public function getWeapons(){
+        $this->db->where('type', 'weapon');
         $result = $this->db->get($this->proficiency_table);
         if ($result->num_rows() > 0){
             return $result->result_array();
