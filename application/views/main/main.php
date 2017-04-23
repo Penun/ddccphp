@@ -1,5 +1,5 @@
 <?php $this->load->view("includes/main/header.php"); ?>
-<body ng-controller="locManager as locM">
+<body ng-controller="locManager as locM" ng-cloak>
 	<div class="headDiv" id="headDiv">
 
 	</div>

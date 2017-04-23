@@ -97,6 +97,7 @@ class Characters extends MY_Controller {
 			unset($subm_data['playchar']['showFeatures']);
 			unset($subm_data['playchar']['showInfo']);
 			unset($subm_data['playchar']['showSkills']);
+			unset($subm_data['playchar']['showExpers']);
 			unset($subm_data['playchar']['showBackground']);
 			$resp['success'] = $this->playchar_model->update($subm_data['playchar'], $subm_data['update_chosen']);
 			$chara = $this->playchar_model->GetCharDetails($subm_data['playchar']['playchar_id']);
@@ -174,6 +175,7 @@ class Characters extends MY_Controller {
 			$playchar['class_build']['class_path']['class_path_id'] = $chara['class_path_id'];
 			$playchar['class_build']['class_path']['name'] = $chara['class_path_name'];
 		}
+		$playchar['class_build']['options'] = $chara['class_build_options'];
 		$playchar['race_build']['race_build_id'] = $chara['race_build_id'];
 		$playchar['race_build']['age'] = $chara['age'];
 		$playchar['race_build']['alignment'] = $chara['alignment'];

@@ -73,6 +73,7 @@ class Playchar_model extends CI_Model {
         $this->db->select('T3.`ability_mods` AS sub_race_ability_mods');
         $this->db->select('T4.`class_id`');
         $this->db->select('T4.`class_path_id`');
+        $this->db->select('T4.`options` AS class_build_options');
         $this->db->select('T5.`name` AS class_name');
         $this->db->select('T5.`hit_dice`');
         $this->db->select('T5.`skill_profs`');

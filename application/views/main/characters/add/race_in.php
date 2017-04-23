@@ -1,7 +1,7 @@
 <div class="right_page_in">
 	<h1>Racial Characteristics:</h1>
 	<form id="insRaceInfo" name="insRaceInfo" novalidate>
-		<div ng-show="addChar.race_build.race.race_id">
+		<div>
 			<p class="underline_center">
 				<span><label for="charAge">Character Age:</label></span>
 				<span><i>(Adult Age: {{chInCont.aduAge}} - Max Age: {{chInCont.maxAge}})</i></span>

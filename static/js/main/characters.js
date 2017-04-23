@@ -304,6 +304,26 @@
 					"stea" : false,
 					"surv" : false
 				};
+				$scope.users[this.set_u_in].playchars[this.set_p_in].showExpers = {
+					"acro" : false,
+					"anim" : false,
+					"arca" : false,
+					"athl" : false,
+					"dece" : false,
+					"hist" : false,
+					"insi" : false,
+					"inti" : false,
+					"inve" : false,
+					"medi" : false,
+					"natu" : false,
+					"perc" : false,
+					"perf" : false,
+					"pers" : false,
+					"reli" : false,
+					"sloh" : false,
+					"stea" : false,
+					"surv" : false
+				};
 				var sendData = {
 					"p_in": this.set_p_in,
 					"u_in": this.set_u_in,
@@ -364,6 +384,16 @@
 						for (var j = 0; j < opts.length; j++){
 							if (opts[j].type == "skill_prof"){
 								$scope.users[this.set_u_in].playchars[this.set_p_in].showBonuses[opts[j].option.prof] = true;
+							}
+						}
+					}
+				}
+				if ($scope.users[this.set_u_in].playchars[this.set_p_in].class_build.options !== typeof undefined && $scope.users[this.set_u_in].playchars[this.set_p_in].class_build.options != null){
+					var options = JSON.parse($scope.users[this.set_u_in].playchars[this.set_p_in].class_build.options);
+					for (var i = 0; i < options.length; i++){
+						if (options[i].type == "exp_prof"){
+							if (options[i].option.type == "skill"){
+								$scope.users[this.set_u_in].playchars[this.set_p_in].showExpers[options[i].option.prof] = true;
 							}
 						}
 					}
@@ -566,6 +596,7 @@
 
 	app.controller('charInsertController', ['$http', '$scope', function($http, $scope){
 		this.chosenProfs = [];
+		this.expProfs = [];
 		this.halfElfAbil = {};
 		$scope.InsStep = 1;
 		this.submitText = "Next";
@@ -808,8 +839,6 @@
 			}
 
 			if (allCheck){
-				this.skillCap = $scope.ch_classes[this.curClassIndex].skill_profs;
-
 				if ($scope.ch_classes[this.curClassIndex].skillProfs == null){
 					var sendData = {
 						"c_in": this.curClassIndex,
@@ -839,6 +868,7 @@
 
 		this.SubmitBG = function(){
 			$scope.$parent.addChar.background_build.background.background_id = Number($scope.$parent.addChar.background_build.background.background_id);
+			this.skillCap = Number($scope.ch_classes[this.curClassIndex].skill_profs);
 			this.GenerateCurClassProfs();
 			if (!$scope.$parent.addChar.is_partial){
 				var tempProf = [];
@@ -857,6 +887,25 @@
 
 			for (var i = 0; i < this.chosenProfs.length; i++){
 				this.chosenProfs[i] = Number(this.chosenProfs[i].class_prof_id);
+			}
+
+			if ($scope.$parent.addChar.class_build.class.class_id == 9){
+				if (this.expProfs.length != this.expCap){
+					allCheck = false;
+				} else {
+					var options = [];
+					for (var i = 0; i < this.expProfs.length; i++){
+						var option = {
+							"type": "exp_prof",
+							"option": {
+								"prof": this.expProfs[i].s_code,
+								"type": (this.expProfs[i].s_code == "thie") ? "tool" : "skill"
+							}
+						};
+						options.push(option);
+					}
+					$scope.$parent.addChar.class_build.options = JSON.stringify(options);
+				}
 			}
 
 			if (allCheck){
@@ -1090,20 +1139,37 @@
 		};
 
 		this.ClassProfsCheck = function(){
-			while (this.chosenProfs != typeof('undefined') && this.chosenProfs.length > this.skillCap) {
-				this.chosenProfs.shift();
+			if (this.chosenProfs !== typeof undefined){
+				while (this.chosenProfs.length > this.skillCap) {
+					this.chosenProfs.shift();
+				}
+				if ($scope.$parent.addChar.class_build.class.class_id == 9){
+					this.rExpProfs = this.rBExpProfs.concat(this.chosenProfs);
+				}
+			}
+		};
+
+		this.ExpProfsCheck = function(){
+			if (this.expProfs !== typeof undefined){
+				while (this.expProfs.length > this.expCap) {
+					this.expProfs.shift();
+				}
 			}
 		};
 
 		this.HElfAbilCheck = function(){
-			while (this.halfElfAbil != typeof('undefined') && this.halfElfAbil.length > 2) {
-				this.halfElfAbil.shift();
+			if (this.halfElfAbil !== typeof undefined){
+				while (this.halfElfAbil.length > 2) {
+					this.halfElfAbil.shift();
+				}
 			}
 		};
 
 		this.HElfSkilCheck = function(){
-			while (this.halfElfSkil != typeof('undefined') && this.halfElfSkil.length > 2) {
-				this.halfElfSkil.shift();
+			if (this.halfElfSkil !== typeof undefined){
+				while (this.halfElfSkil.length > 2) {
+					this.halfElfSkil.shift();
+				}
 			}
 		};
 
@@ -1219,6 +1285,26 @@
 		}
 
 		this.GenerateCurClassProfs = function(){
+			if (typeof $scope.$parent.addChar.class_build.class_path !== typeof undefined && $scope.$parent.addChar.class_build.class_path.class_path_id == 3){
+				this.skillCap += 3;
+			}
+
+			if ($scope.$parent.addChar.class_build.class.class_id == 9){
+				this.rBExpProfs = [
+					{
+						"class_prof_id": -1,
+						"name": "Thieves' tools",
+						"s_code": "thie"
+
+					}
+				];
+				if ($scope.$parent.addChar.level >= 6){
+					this.expCap = 4;
+				} else {
+					this.expCap = 2;
+				}
+			}
+
 			var raceProfs = [];
 			if ($scope.$parent.addChar.race_build.race.race_id != 7){
 				for (var i = 0; i < $scope.races[this.curRaceIndex].features.length; i++){
@@ -1248,6 +1334,44 @@
 				}
 			}
 
+			if ($scope.$parent.addChar.class_build.class.class_id == 9){
+				for (var i = 0; i < $scope.BGs[this.curBGIndex].proficiencies.length; i++){
+					var bgProf = {
+						"class_prof_id": -i - 2,
+						"name": $scope.BGs[this.curBGIndex].proficiencies[i].proficiency.name,
+						"s_code": $scope.BGs[this.curBGIndex].proficiencies[i].proficiency.s_code
+					};
+					this.rBExpProfs.push(bgProf);
+				}
+				if ($scope.$parent.addChar.race_build.race.race_id == 7){
+					for (var i = 0; i < $scope.$parent.addChar.race_build.options.length; i++){
+						var add = true;
+						for (var j = 0; j < this.rBExpProfs.length; j++){
+							if (this.rBExpProfs[j].s_code == $scope.$parent.addChar.race_build.options[i].option.prof){
+								add = false;
+								break;
+							}
+						}
+						if (add && $scope.$parent.addChar.race_build.options[i].type == "skill_prof"){
+							var name = "";
+							for (var j = 0; j < $scope.skillProfs.length; j++){
+								if ($scope.skillProfs[j].s_code == $scope.$parent.addChar.race_build.options[i].option.prof){
+									name = $scope.skillProfs[j].name;
+									break;
+								}
+							}
+							var rcProf = {
+								"class_prof_id": -this.rBExpProfs.length - i - 2,
+								"name": name,
+								"s_code": $scope.$parent.addChar.race_build.options[i].option.prof
+							};
+							this.rBExpProfs.push(rcProf);
+						}
+					}
+				}
+				this.rExpProfs = this.rBExpProfs;
+			}
+
 			$scope.curClassProfs = [];
 			for (var i = 0; i < $scope.ch_classes[this.curClassIndex].skillProfs.length; i++){
 				var addIt = true;
@@ -1271,7 +1395,8 @@
 						if ($scope.ch_classes[this.curClassIndex].skillProfs[i].proficiency.proficiency_id == $scope.skillProfs[j].proficiency_id){
 							var tempClassProf = {
 								"class_prof_id": $scope.ch_classes[this.curClassIndex].skillProfs[i].class_proficiency_id,
-								"name": $scope.skillProfs[j].name
+								"name": $scope.skillProfs[j].name,
+								"s_code": $scope.skillProfs[j].s_code
 							};
 							$scope.curClassProfs.push(tempClassProf);
 							break;

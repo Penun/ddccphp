@@ -21,24 +21,78 @@
 		<br />
 		<span class="clickable_d_head">Skills</span>
 		<div ng-show="chara.showSkills" class="clickable_d_in">
-			<div class="skill_div"><b>Acrobatics</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.acro"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Animal Handling</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.anim"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Arcana</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.arca"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Athletics</b> <i>(Str)</i>: <span class="skill_span">{{chara.m_str}}<span class="reset" ng-show="chara.showBonuses.athl"> + {{chara.profBonus}} :: {{chara.m_str + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Deception</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.dece"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>History</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.hist"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Insight</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.insi"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Intimidation</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.inti"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Investigation</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.inve"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Medicine</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.medi"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Nature</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.natu"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Perception</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.perc"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Performance</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.perf"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Persuasion</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.pers"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Religion</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.reli"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Sleight of Hand</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.sloh"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Stealth</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.stea"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span></span></div>
-			<div class="skill_div"><b>Survival</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.surv"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span></span></div>
+			<div class="skill_div"><b>Acrobatics</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.acro" ng-switch on="chara.showExpers.acro">
+				 <span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span>
+				 <span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_dex + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Animal Handling</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.anim" ng-switch on="chara.showExpers.anim">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_wis + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Arcana</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.arca" ng-switch on="chara.showExpers.arca">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_int + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Athletics</b> <i>(Str)</i>: <span class="skill_span">{{chara.m_str}}<span class="reset" ng-show="chara.showBonuses.athl" ng-switch on="chara.showExpers.athl">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_str + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_str + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Deception</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.dece" ng-switch on="chara.showExpers.dece">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_cha + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>History</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.hist" ng-switch on="chara.showExpers.hist">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_int + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Insight</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.insi" ng-switch on="chara.showExpers.insi">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_wis + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Intimidation</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.inti" ng-switch on="chara.showExpers.inti">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_cha + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Investigation</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.inve" ng-switch on="chara.showExpers.inve">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_int + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Medicine</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.medi" ng-switch on="chara.showExpers.medi">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_wis + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Nature</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.natu" ng-switch on="chara.showExpers.natu">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_int + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Perception</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.perc" ng-switch on="chara.showExpers.perc">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_wis + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Performance</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.perf" ng-switch on="chara.showExpers.perf">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_cha + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Persuasion</b> <i>(Cha)</i>: <span class="skill_span">{{chara.m_cha}}<span class="reset" ng-show="chara.showBonuses.pers" ng-switch on="chara.showExpers.pers">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_cha + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_cha + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Religion</b> <i>(Int)</i>: <span class="skill_span">{{chara.m_int}}<span class="reset" ng-show="chara.showBonuses.reli" ng-switch on="chara.showExpers.reli">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_int + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_int + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Sleight of Hand</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.sloh" ng-switch on="chara.showExpers.sloh">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_dex + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Stealth</b> <i>(Dex)</i>: <span class="skill_span">{{chara.m_dex}}<span class="reset" ng-show="chara.showBonuses.stea" ng-switch on="chara.showExpers.stea">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_dex + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_dex + (chara.profBonus * 2)}}</span>
+			</span></span></div>
+			<div class="skill_div"><b>Survival</b> <i>(Wis)</i>: <span class="skill_span">{{chara.m_wis}}<span class="reset" ng-show="chara.showBonuses.surv" ng-switch on="chara.showExpers.surv">
+				<span class="reset" ng-switch-when="false"> + {{chara.profBonus}} :: {{chara.m_wis + chara.profBonus}}</span>
+				<span class="reset" ng-switch-when="true"> + ({{chara.profBonus}} * 2) :: {{chara.m_wis + (chara.profBonus * 2)}}</span>
+			</span></span></div>
 		</div>
 	</div>
 	<div id="feat_panel" ng-click="mainCont.RevealFeatures()" class="clickable_det">
